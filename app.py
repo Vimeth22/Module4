@@ -142,12 +142,7 @@ def stitch_two_manually(img1, img2):
 
 # --- LOGIC: STITCHING CONTROLLER ---
 def process_stitching():
-    """
-    Main panorama process: 
-    1. Loads, resizes images. 
-    2. Tries OpenCV's Auto Stitcher first. 
-    3. Falls back to the robust manual stitcher if auto fails.
-    """
+
     filenames = ['IMG1.jpg', 'IMG2.jpg', 'IMG3.jpg', 'IMG4.jpg']
     images = []
 
