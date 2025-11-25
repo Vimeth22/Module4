@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Module 4: Applied Computer Vision Research</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* --- Academic Color Palette --- */
+        body {
+            background-color: #0b1a30; /* Deep Navy Blue for professional feel */
+            color: #ffffff; /* White text on dark background */
+        }
+        .container {
+            background-color: #1a2c42; /* Slightly lighter dark shade for content separation */
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+        .bg-white { 
+            background-color: #ffffff !important; 
+            border: 1px solid #dee2e6;
+        }
+        /* H1 outside the white box remains light */
+        h1 { color: #f8f9fa; } 
+        p.text-muted { color: #adb5bd !important; } 
+
+        /* --- Component Styling --- */
+        .source-thumb { 
+            width: 100px; height: 80px; object-fit: cover; border-radius: 6px; 
+            border: 2px solid #5a6a7e; margin-right: 8px; transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .source-thumb:hover { 
+            transform: scale(1.1); 
+            box-shadow: 0 0 10px rgba(78, 115, 223, 0.5); 
+        }
+        .result-img { 
+            max-width: 100%; height: auto; border-radius: 8px; 
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2); border: 1px solid #ced4da;
+        }
+        .btn-action { 
+            width: 320px; margin-top: 25px; font-weight: 600; 
+            letter-spacing: 0.5px;
+        }
+        .loader { 
+            display: none; color: #4e73df; 
+            font-weight: 700; margin: 15px 0; 
+        }
+        .nav-tabs { border-bottom: 2px solid #4e73df; }
+        .nav-link { 
+            color: #adb5bd; font-weight: 500; 
+            transition: color 0.3s; 
+            border: none;
+        }
+        .nav-link.active { 
+            color: #ffffff; 
+            background-color: #1a2c42;
+            border-bottom: 3px solid #4e73df; 
+            border-radius: 6px 6px 0 0;
+        }
+        
+        /* --- FIX: Ensure ALL headings inside white box are black --- */
+        .tab-content h4, .tab-content h5 {
+            color: #000000 !important; /* Explicit black for maximum contrast */
+        }
+        .tab-content p.text-secondary {
+             color: #495057 !important; /* Darker secondary text for readability */
+        }
+    </style>
+</head>
+<body class="bg-dark">
+
+<div class="container py-5">
+    <h1 class="mb-2">Module 4</h1>
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#part1" type="button" role="tab">Part 1: Panoramic Image Synthesis</button></li>
+        <li class="nav-item" role="presentation"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#part2" type="button" role="tab">Part 2: SIFT Feature Descriptor Analysis</button></li>
+    </ul>
+
+    <div class="tab-content p-4 bg-white border border-top-0 rounded-bottom shadow-sm">
+        
+        <div class="tab-pane fade show active" id="part1" role="tabpanel">
+            <h4>Objective: Robust Multi-Image Registration and Synthesis</h4>
+            
+            <div class="d-flex mb-3">
+                <img src="/static/images/IMG1.jpg" alt="Source Image 1" class="source-thumb">
+                <img src="/static/images/IMG2.jpg" alt="Source Image 2" class="source-thumb">
+                <img src="/static/images/IMG3.jpg" alt="Source Image 3" class="source-thumb">
+                <img src="/static/images/IMG4.jpg" alt="Source Image 4" class="source-thumb">
+            </div>
+
+            <button id="btnStitch" class="btn btn-primary btn-action">Initiate Panorama Synthesis</button>
+            <div id="loader1" class="loader">Executing Multi-Image Registration and Blending Algorithm...</div>
+
+            <div id="resStitch" class="row mt-4" style="display:none;">
+                <div class="col-12 mb-4">
+                    <h5>Computed Result (Synthesized Panorama)</h5>
+                    <img id="imgStitch" class="result-img" src="" alt="Stitched Panorama Result">
+                </div>
+                <div class="col-12">
+                    <h5>Ground Truth Reference (Mobile Panorama)</h5>
+                    <img id="imgPhone" class="result-img" src="" alt="Ground Truth Reference">
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="part2" role="tabpanel">
+            <h4>Comparative Keypoint Localization Study</h4>
+            <div class="mb-3">
+                 <img src="/static/images/IMG2.jpg" alt="Test Image 2" class="source-thumb" style="width: 250px; height: auto;">
+            </div>
+
+            <button id="btnSift" class="btn btn-success btn-action">Execute Keypoint Detection Analysis</button>
+            <div id="loader2" class="loader">Analyzing computational density and feature distribution...</div>
+
+            <div id="resSift" class="row mt-4" style="display:none;">
+                <div class="col-md-6">
+                    <h5>Custom Implementation (DoG Approximation)</h5>
+                    <img id="imgSiftScratch" class="result-img" src="" alt="Custom SIFT Result">
+                    <div class="mt-2 badge bg-success fs-6">Detected Feature Count: <span id="countScratch">0</span></div>
+                </div>
+                <div class="col-md-6">
+                    <h5>OpenCV Standard Implementation</h5>
+                    <img id="imgSiftCV" class="result-img" src="" alt="OpenCV SIFT Result">
+                    <div class="mt-2 badge bg-danger fs-6">Detected Feature Count: <span id="countCV">0</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Logic for Stitching (Endpoints must match app.py)
+    document.getElementById('btnStitch').addEventListener('click', async () => {
+        document.getElementById('loader1').style.display = 'block';
+        document.getElementById('resStitch').style.display = 'none';
+        
+        try {
+            const res = await fetch('/module4/run_stitch', { method: 'POST' });
+            const data = await res.json();
+            
+            if(data.success) {
+                document.getElementById('imgStitch').src = 'data:image/jpeg;base64,' + data.pano_image;
+                document.getElementById('imgPhone').src = 'data:image/jpeg;base64,' + data.phone_image;
+                document.getElementById('resStitch').style.display = 'flex';
+            } else {
+                alert("Computational Error in Stitching Module: " + data.error);
+            }
+        } catch (e) { alert("Server Connectivity Error: Unable to reach endpoint."); }
+        document.getElementById('loader1').style.display = 'none';
+    });
+
+    // Logic for SIFT (Endpoints must match app.py)
+    document.getElementById('btnSift').addEventListener('click', async () => {
+        document.getElementById('loader2').style.display = 'block';
+        document.getElementById('resSift').style.display = 'none';
+        
+        try {
+            const res = await fetch('/module4/run_sift', { method: 'POST' });
+            const data = await res.json();
+            
+            if(data.success) {
+                document.getElementById('imgSiftScratch').src = 'data:image/jpeg;base64,' + data.scratch_img;
+                document.getElementById('imgSiftCV').src = 'data:image/jpeg;base64,' + data.cv_img;
+                document.getElementById('countScratch').innerText = data.scratch_count;
+                document.getElementById('countCV').innerText = data.cv_count;
+                document.getElementById('resSift').style.display = 'flex';
+            } else {
+                alert("Computational Error in SIFT Module: " + data.error);
+            }
+        } catch (e) { alert("Server Connectivity Error: Unable to reach endpoint."); }
+        document.getElementById('loader2').style.display = 'none';
+    });
+</script>
+</body>
+</html>
